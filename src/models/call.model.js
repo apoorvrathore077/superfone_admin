@@ -1,3 +1,4 @@
+import { error } from "console";
 import pool from "../config/db.js";
 
 // Fetch all calls with optional filters
@@ -62,6 +63,7 @@ export async function findCallById(id) {
              c.started_at,
              c.ended_at,
              c.recording_url,
+             c.duration,
              t.id AS team_id,
              t.name AS team_name
       FROM telephony.calls c
@@ -75,5 +77,32 @@ export async function findCallById(id) {
   } catch (err) {
     console.error("findCallById error:", err.message);
     throw err;
+  }
+}
+
+export async function findCallByTeamId(team_id){
+  try{
+    const {rows} = await pool.query(
+      `
+      SELECT c.id,
+      c.team_id,
+      c.call_ssid,
+      c.from_number,
+      c.to_number,
+      c.status,    
+      c.started_at,
+      c.ended_at,
+      c.recording_url,
+      c.duration,
+      t.id AS team_id,
+      t.name AS team_name
+      FROM telephony.calls c JOIN auth.teams t ON c.team_id = t.id
+      WHERE c.team_id = $1
+      `,
+      [team_id]
+    );
+    return rows;
+  }catch(err){
+    console.log("Error: ",err.message);  
   }
 }
