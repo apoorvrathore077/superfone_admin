@@ -31,6 +31,7 @@ export async function findAllCalls({ from, to, teamId }) {
              c.status,
              c.started_at,
              c.ended_at,
+             c.duration,
              c.recording_url,
              t.name AS team_name
       FROM telephony.calls c

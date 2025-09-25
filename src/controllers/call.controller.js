@@ -2,9 +2,9 @@ import { findAllCalls,findCallById } from "../models/call.model.js";
 
 export async function getAllCallsController(req, res) {
   try {
-    const { from, to, teamId } = req.query;
+    const { fromNumber, toNumber, teamId } = req.query;
 
-    const calls = await findAllCalls({ from, to, teamId });
+    const calls = await findAllCalls({ fromNumber, toNumber, teamId });
 
     if (!calls || calls.length === 0) {
       return res.status(404).json({ message: "No calls found 😞" });
@@ -19,8 +19,6 @@ export async function getAllCallsController(req, res) {
     return res.status(500).json({ error: err.message });
   }
 }
-
-
 
 export async function getCallByIdController(req, res) {
   try {
