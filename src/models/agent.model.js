@@ -67,17 +67,6 @@ export async function updateAgent(id, fields) {
 }
 
 //Delete agent
-// export async function deleteAgent(id){
-//     const{rows} = await pool.query(
-//         'DELETE FROM auths.users WHERE id =$1 RETURINING *'
-//         [id]
-//     );
-//     return rows[0];
-// }
-
-//check
-
-
 export async function deleteAgent(id) {
     const { rows } = await pool.query(
         `DELETE FROM auths.users 

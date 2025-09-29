@@ -1,12 +1,13 @@
 import express from "express";
-import { createTeamController, getTeamController } from "../controllers/team.controller.js";
+import { createTeamController, getAllTeamController, getTeamController, getTeamsByAdminController } from "../controllers/team.controller.js";
 
 const teamRoute = express.Router();
 
 // Create a new team
 teamRoute.post("/teams/create", createTeamController);
 
-// Get team details along with members
-teamRoute.get("/teams/:id", getTeamController);
+teamRoute.get("/all",getAllTeamController);
+teamRoute.get("/admin/:adminid",getTeamsByAdminController);
+teamRoute.get("/:id", getTeamController);
 
 export default teamRoute;

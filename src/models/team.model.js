@@ -34,20 +34,49 @@ export async function addTeamMember({ teamId, userId, role = 'manager' }) {
 // Get team by ID
 export async function getTeamById(id) {
   const { rows } = await pool.query(
-    `SELECT * FROM auths.teams WHERE id = $1`,
+    `SELECT t.*, 
+            (SELECT COUNT(*) FROM auths.team_members tm WHERE tm.team_id = t.id) AS member_count
+     FROM auths.teams t
+     WHERE t.id = $1`,
     [id]
   );
   return rows[0];
 }
 
+
 // Get all team members
-export async function getTeamMembers(teamId) {
+export async function getAllTeam() {
   const { rows } = await pool.query(
-    `SELECT tm.user_id, u.name, u.email, tm.role
-     FROM auths.team_members tm
-     JOIN auths.users u ON tm.user_id = u.id
-     WHERE tm.team_id = $1`,
-    [teamId]
+    `SELECT t.*, 
+            (SELECT COUNT(*) 
+             FROM auths.team_members tm 
+             WHERE tm.team_id = t.id) AS member_count
+     FROM auths.teams t`
   );
   return rows;
+}
+
+//Get Team Under Admin(adminId)
+export async function getTeamsByAdmin(adminId) {
+  const { rows } = await pool.query(
+    `SELECT t.id,
+            t.name,
+            t.owner_id,
+            t.company_id,
+            t.created_at,
+            COUNT(tm.user_id) AS member_count
+     FROM auths.teams t
+     LEFT JOIN auths.team_members tm
+       ON tm.team_id = t.id
+     WHERE t.owner_id = $1
+     GROUP BY t.id, t.name, t.owner_id, t.company_id, t.created_at
+     ORDER BY t.created_at DESC`,
+    [adminId]
+  );
+
+  // Return all teams, not just the first one
+  return rows.map(team => ({
+    ...team,
+    member_count: Number(team.member_count)
+  }));
 }

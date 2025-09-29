@@ -32,10 +32,19 @@ export async function getUserById(id) {
   return rows[0];
 }
 
-// Optional: get team by ID
+// List all members by team ID
 export async function getTeamById(id) {
   const { rows } = await pool.query(
     `SELECT * FROM auths.teams WHERE id = $1`,
+    [id]
+  );
+  return rows[0];
+}
+
+//Delete member by Id
+export async function deleteMember(id){
+  const { rows } = await pool.query(
+    "DELETE FROM auths.team_members WHERE id=$1 RETURNING *",
     [id]
   );
   return rows[0];

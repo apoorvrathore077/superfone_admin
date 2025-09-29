@@ -1,4 +1,4 @@
-import { addTeamMember, getTeamMembers, getUserById, getTeamById } from "../models/teammembers.model.js";
+import { addTeamMember, getTeamMembers, getUserById, getTeamById, deleteMember } from "../models/teammembers.model.js";
 
 // Add a member
 export async function addTeamMemberController(req, res) {
@@ -24,7 +24,7 @@ export async function addTeamMemberController(req, res) {
   }
 }
 
-// List all members
+// List all members by team ID
 export async function getTeamMembersController(req, res) {
   try {
     const { team_id } = req.params;
@@ -38,4 +38,34 @@ export async function getTeamMembersController(req, res) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
+}
+
+// Delete member by ID
+export async function deleteMemberController(req,res){
+  try{
+  const {id} = req.params;
+  if(!id || !isNaN(id)){
+    return res.status(400).json({message:"Invalid member Id"})
+  }
+  const deletedMember=await deleteMember(id)
+  if(!deletedMember){
+    return res.status(404).json({
+      message:"Member not found",
+      success:false
+    });
+  }
+  res.status(200).json({
+    message:"Member delete Sucessfull",
+    deletedMember,
+    success:true
+  })
+}catch(error){
+    console.log(error.message);
+    res.status(500).json({
+      message:error.message,
+      success:true,
+    })
+    
+}
+  
 }
