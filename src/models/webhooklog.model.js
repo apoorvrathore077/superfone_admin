@@ -1,38 +1,39 @@
 import pool from "../config/db.js";
 
-// Create a new webhook log
-export async function createWebhookLog({ teamId, event_type, payload }) {
+// Get all webhook logs for the company
+export async function getAllWebhookLogs(companyId) {
   const { rows } = await pool.query(
-    `INSERT INTO telephony.webhook_logs (team_id, event_type, payload)
-     VALUES ($1, $2, $3)
-     RETURNING *`,
-    [teamId || null, event_type, payload]
-  );
-  return rows[0];
-}
-
-// Get all webhook logs
-export async function getAllWebhookLogs() {
-  const { rows } = await pool.query(
-    `SELECT * FROM telephony.webhook_logs ORDER BY received_at DESC`
+    `SELECT wl.*, t.company_id
+     FROM telephony.webhook_logs wl
+     JOIN auths.teams t ON wl.team_id = t.id
+     WHERE t.company_id = $1
+     ORDER BY wl.received_at DESC`,
+    [companyId]
   );
   return rows;
 }
 
-// Get webhook log by ID
+// Get webhook log by ID with company check
 export async function getWebhookLogById(id) {
   const { rows } = await pool.query(
-    `SELECT * FROM telephony.webhook_logs WHERE id = $1`,
+    `SELECT wl.*, t.company_id
+     FROM telephony.webhook_logs wl
+     LEFT JOIN auths.teams t ON wl.team_id = t.id
+     WHERE wl.id = $1`,
     [id]
   );
-  return rows[0];
+  return rows[0]; // undefined if not found
 }
 
-// Get all webhook logs by team ID
-export async function getWebhookLogsByTeam(teamId) {
+// Get webhook logs by team with company check
+export async function getWebhookLogsByTeam(teamId, companyId) {
   const { rows } = await pool.query(
-    `SELECT * FROM telephony.webhook_logs WHERE team_id = $1 ORDER BY received_at DESC`,
-    [teamId]
+    `SELECT wl.*, t.company_id
+     FROM telephony.webhook_logs wl
+     JOIN auths.teams t ON wl.team_id = t.id
+     WHERE wl.team_id = $1 AND t.company_id = $2
+     ORDER BY wl.received_at DESC`,
+    [teamId, companyId]
   );
   return rows;
 }

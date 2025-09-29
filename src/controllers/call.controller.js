@@ -21,18 +21,32 @@ export async function getAllCallsController(req, res) {
   }
 }
 
-export async function getCallByFilter(req,res){
-  try{
-    const{from_number,to_number,team_id} = req.query;
-    if(!from_number && !to_number && !team_id) return res.status(400).json({message:"Atleast one filter required(from_number,to_number,team_id)."});
-    const call = await findAllCalls({from_number,to_number,team_id});
-    if(!call) return res.status(404).json({message:"No Call Found."});
-    return res.status(200).json({message:"Call Found",call});
-  }catch(err){
-    console.log("Error: ",err.message);
-    res.status(500).json({error:err.message});
+export async function getCallByFilter(req, res) {
+  try {
+    const { from_number, to_number, team_id, user_id } = req.query;
+
+    // Fetch calls using dynamic filters
+    const calls = await findAllCalls({
+      fromNumber: from_number,
+      toNumber: to_number,
+      teamId: team_id,
+      userId: user_id
+    });
+
+    if (!calls || calls.length === 0) {
+      return res.status(404).json({ message: "No calls found matching the filters." });
+    }
+
+    return res.status(200).json({
+      message: "Calls fetched successfully",
+      calls
+    });
+  } catch (err) {
+    console.error("getCallByFilter error:", err.message);
+    return res.status(500).json({ error: err.message });
   }
 }
+
 
 export async function getCallByIdController(req, res) {
   try {

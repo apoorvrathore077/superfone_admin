@@ -1,23 +1,22 @@
 import express from "express";
 import {
-  createWebhookLogController,
   getAllWebhookLogsController,
   getWebhookLogByIdController,
   getWebhookLogsByTeamController
 } from "../controllers/webhooklog.controller.js";
+import authenticate from "../middlewares/authenticate.middleware.js";
+import authorizeRole from "../middlewares/authorizerole.middleware.js";
 
 const webhookLogRouter = express.Router();
 
-// Create a webhook log
-webhookLogRouter.post("/telephony/webhook/create", createWebhookLogController);
 
 // Get all webhook logs
-webhookLogRouter.get("/telephony/webhook-logs", getAllWebhookLogsController);
+webhookLogRouter.get("/", authenticate, authorizeRole('admin'), getAllWebhookLogsController);
 
 // Get webhook log by ID
-webhookLogRouter.get("/telephony/webhook-logs/:id", getWebhookLogByIdController);
+webhookLogRouter.get("/:id", authenticate, authorizeRole('admin'), getWebhookLogByIdController);
 
 // Get webhook logs by team
-webhookLogRouter.get("/telephony/webhook-logs/team/:team_id", getWebhookLogsByTeamController);
+webhookLogRouter.get("/team/:team_id", authenticate, authorizeRole('admin'), getWebhookLogsByTeamController);
 
 export default webhookLogRouter;

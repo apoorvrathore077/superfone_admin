@@ -18,7 +18,7 @@ export async function login(req, res) {
 
     if (!user) {
       // Return immediately after sending response
-      return res.status(401).json({ message: "Bhosdike isme sirf admin login karega.😡🤬" });
+      return res.status(401).json({ message: "Sorry You are not allowed to login." });
     }
 
     const validPassword = await bcrypt.compare(password, user.password);
@@ -27,9 +27,9 @@ export async function login(req, res) {
     }
 
     const token = jwt.sign(
-      { id: user.id, email: user.email },
+      { id: user.id, email: user.email,global_role:user.global_role,company_id:user.company_id },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "24h" }
     );
 
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
@@ -46,7 +46,9 @@ export async function login(req, res) {
         name: user.name,
         email: user.email,
         mobile: user.mobile,
-        profile_pic: user.profile_pic
+        company_id:user.company_id,
+        profile_pic: user.profile_pic,
+        global_role:user.global_role
       }
     });
   } catch (err) {

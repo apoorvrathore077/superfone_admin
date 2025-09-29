@@ -2,22 +2,22 @@ import express from "express";
 import {
   addPhoneNumberController,
   getAllPhoneNumbersController,
-  getPhoneNumberByIdController,
-  getPhoneNumbersByTeamController
+  getPhoneNumbersByTeamController,
+  deletePhoneNumberController
 } from "../controllers/phonenumber.controller.js";
+import authenticate from "../middlewares/authenticate.middleware.js";
+import authorizeRole from "../middlewares/authorizerole.middleware.js";
 
 const phoneNumberRoute = express.Router();
 
 // Add a phone number
-phoneNumberRoute.post("/telephony/phone-numbers/add", addPhoneNumberController);
+phoneNumberRoute.post("/add",authenticate,authorizeRole('admin'), addPhoneNumberController);
 
 // Get all phone numbers
-phoneNumberRoute.get("/telephony/phone-numbers/get", getAllPhoneNumbersController);
-
-// Get phone number by ID
-phoneNumberRoute.get("/telephony/phone-numbers/:id", getPhoneNumberByIdController);
+phoneNumberRoute.get("/",authenticate,authorizeRole('admin'), getAllPhoneNumbersController);
 
 // Get all phone numbers by team
-phoneNumberRoute.get("/telephony/phone-numbers/team/:team_id", getPhoneNumbersByTeamController);
+phoneNumberRoute.get("/team/:team_id",authenticate,authorizeRole('admin'), getPhoneNumbersByTeamController);
+phoneNumberRoute.delete("/delete/:id",authenticate,authorizeRole('admin'), deletePhoneNumberController);
 
 export default phoneNumberRoute;
