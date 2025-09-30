@@ -61,31 +61,30 @@ export async function getCompanyByIdController(req,res) {
 }
 
 //Get Company by Name
-export async function getCompanyByNameController(req,res){
+export async function getCompanyByNameController(req, res) {
     try {
-        const name=req.params.name;
-        console.log("Company Name: ",name);
-        
-        if(!name || name.trim() === ""){
-            return res.status(400).json({message:"Invalid or missing company name"})
+        const name = req.params.name;
+
+        if (!name || name.trim() === "") {
+            return res.status(400).json({ message: "Invalid or missing company name" });
         }
-        // const company= await getCompanyByName(name);
+
         const company = await getCompanyByName(name.trim());
-        if(!company){
-            return res.status(404).json({message:"Company not found"})
+
+        if (!company) {
+            return res.status(404).json({ message: "Company not found" });
         }
+
         return res.status(200).json({
-             message: "Company fetched successfully",
-             company,
-             success: true
+            message: "Company fetched successfully",
+            company,
+            success: true
         });
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({
-            message:error.message,
-            success:false
-
-        })
+        console.error(error.message);
+        return res.status(500).json({
+            message: error.message,
+            success: false
+        });
     }
 }
-

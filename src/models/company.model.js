@@ -28,14 +28,10 @@ export async function getCompanyById(id){
 }
 
 //Get company by Name
-export async function getCompanyByName(name){
-    const {rows} =await pool.query(
-        // `SELECT *FROM auths.company WHERE name= $1`,
-        `SELECT * FROM auths.company WHERE name ILIKE $1`,
-        // [`%${name}%`]
-        // [name]
+export async function getCompanyByName(name) {
+    const { rows } = await pool.query(
+        `SELECT * FROM auths.company WHERE name ILIKE $1 LIMIT 1`,
         [`%${name.trim()}%`]
     );
-    // return rows[0];
-    return rows;
+    return rows[0] || null; // return single company or null
 }
