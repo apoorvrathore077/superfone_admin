@@ -42,7 +42,6 @@ export async function getCallByFilter(req, res) {
       calls
     });
   } catch (err) {
-    console.error("getCallByFilter error:", err.message);
     return res.status(500).json({ error: err.message });
   }
 }
