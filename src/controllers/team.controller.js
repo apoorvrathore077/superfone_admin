@@ -4,8 +4,10 @@ import {
   addTeamMember,
   getTeamById,
   getAllTeam,
+  
   getTeamsByAdmin
 } from "../models/team.model.js";
+import { getTeamMembers } from "../models/teammembers.model.js";
 
 // Create a new team and add owner as member
 export async function createTeamController(req, res) {
@@ -55,9 +57,8 @@ export async function getTeamController(req, res) {
       team
     });
 
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+  } catch (err) {
+    res.status(500).json({ error:err.message });
   }
 }
 
