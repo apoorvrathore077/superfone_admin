@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import pool from "./src/config/db.js";
 import app from "./src/app.js";
 
+
+
 dotenv.config();
 const port = process.env.PORT || 5000;
 
@@ -16,6 +18,7 @@ pool.connect()
     console.error("❌ PostgreSQL connection error:", err.message);
   });
 
+ 
 // Create HTTP server
 const server = http.createServer(app);
 

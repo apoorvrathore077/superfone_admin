@@ -7,6 +7,7 @@ import router from "./routes/user.routes.js";
 import callRouter from "./routes/call.routes.js";
 import leadRoutes from "./routes/lead.routes.js";
 import teamRoute from "./routes/team.routes.js";
+import kycRouter from "./routes/kyc.routes.js";
 import teamMemberRouter from "./routes/teamembers.routes.js";
 import phoneNumberRoute from "./routes/phonenumber.routes.js";
 import webhookLogRouter from "./routes/webhooklog.routes.js";
@@ -29,6 +30,7 @@ app.use("/api/admin/leads",leadRoutes);
 app.use("/api/admin/teams",teamRoute);
 app.use('/api/admin/team-members',teamMemberRouter);
 app.use('/api/admin/webhook-logs', webhookLogRouter);
+app.use('/api/admin/kyc', kycRouter);
 
 
 
